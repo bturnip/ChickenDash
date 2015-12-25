@@ -3,6 +3,9 @@
 Danny Anderson
 20151017
 
+packet sniffing code started here:
+https://medium.com/@edwardbenson/how-i-hacked-amazon-s-5-wifi-button-to-track-baby-data-794214b0bdd8
+
 @author: bturnip
 """
 
@@ -24,6 +27,7 @@ LOG_FILE = meta.CDD_DIR + "/data/cdd_log_" + meta.YYYYMMDD + ".log"
 CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
 DEBUG_FLAG = meta.DEBUG_FLAG
 
+
 # =========================================================================
 # Prep logging
 # =========================================================================
@@ -41,16 +45,24 @@ city = a[city_name]
 timezone = city.timezone
 sun = city.sun(date=date.today(), local=True)
 
-meta.WRITE_LOG(LOG_FILE,
-               'Astral calculation for Sunset: ' + str(sun['sunset']),
-               True)
-meta.WRITE_LOG(LOG_FILE,
-               'Astral calculation for Dusk:   ' + str(sun['dusk']),
-               True)
-
 SECONDS_TIL_SUNSET = meta.SECONDS_BETWEEN(sun['sunset'])
 SECONDS_TIL_DUSK = meta.SECONDS_BETWEEN(sun['dusk'])
 DUSK_TIME = sun['dusk']
+
+
+meta.WRITE_LOG(LOG_FILE,
+               'Calculating sunset and dusk for city: [' +  city_name + ']')
+meta.WRITE_LOG(LOG_FILE,
+               'Astral calculation for Sunset: ' + str(sun['sunset']))
+meta.WRITE_LOG(LOG_FILE,
+               'Astral calculation for Dusk:   ' + str(sun['dusk']))
+meta.WRITE_LOG(LOG_FILE,
+               'SECONDS_TIL_SUNSET: [' + str(SECONDS_TIL_SUNSET) + ']')
+meta.WRITE_LOG(LOG_FILE,
+               'SECONDS_TIL_DUSK: [' + str(SECONDS_TIL_DUSK) + ']')
+
+
+
 
 
 # =========================================================================

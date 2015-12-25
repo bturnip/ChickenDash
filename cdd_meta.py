@@ -100,20 +100,21 @@ def WRITE_LOG(file, message, print_option = False):
 # =========================================================================
 # Calculate time diffs
 # =========================================================================
-def SECONDS_BETWEEN(event_time):
+def SECONDS_BETWEEN(event_time, print_option = False):
 
     RIGHT_NOW = TIMEZONE.localize(datetime.datetime.now())
-    # print "+++DEBUG: RIGHT_NOW:", RIGHT_NOW
 
     # we passed in a date, right?
     if isinstance(event_time, datetime.datetime):
         if (event_time >= RIGHT_NOW):
-            print "+++INFO: SECONDS_BETWEEN(): future event"
-            print (event_time - RIGHT_NOW).total_seconds()
+            if print_option:
+                print "+++INFO: SECONDS_BETWEEN(): future event"
+                print (event_time - RIGHT_NOW).total_seconds()
             return int((event_time - RIGHT_NOW).total_seconds())
         else:
-            print "+++INFO: SECONDS_BETWEEN(): past event"
-            print (RIGHT_NOW - event_time).total_seconds()
+            if print_option:
+                print "+++INFO: SECONDS_BETWEEN(): past event"
+                print (RIGHT_NOW - event_time).total_seconds()
             return int((RIGHT_NOW - event_time).total_seconds())
     else:
         print "+++ERROR: YOU ARE KILLING ME, SMALLS!!"

@@ -13,7 +13,6 @@ from scapy.all import *
 # =========================================================================
 # Variables
 # =========================================================================
-DEBUG_FLAG = True
 today = datetime.datetime.today()
 YYYYMMDD = today.strftime('%Y%m%d%H%M%S')
 CITY = "Little Rock"
@@ -72,6 +71,16 @@ avatar = avatar_dict[v]
 #print "+++DEBUG:", "CDD_DIR",CDD_DIR
 #print "+++DEBUG:", "CDD_DATA",CDD_DATA
 #print "+++DEBUG:", "CDD_DATA_FILE",CDD_DATA_FILE
+
+
+# =========================================================================
+# Logging function
+# =========================================================================
+def SHOW_LOG(file):
+    if os.path.isfile(file):
+        with open(file, "r") as f:
+            print f.read()
+        f.close()
 
 
 # =========================================================================

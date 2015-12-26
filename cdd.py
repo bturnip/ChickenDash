@@ -21,18 +21,16 @@ from scapy.all import *
 import argparse
 
 
-
 # =========================================================================
 # Argument parsing
 # =========================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument("-f","--force_listen"\
-                    ,help="Force the packet sniffer (override the time settings.)"\
+parser.add_argument("-f", "--force_listen"
+                    ,help = "Force the packet sniffer (override the time settings.)"
+                    ,action = "store_true")
+parser.add_argument("-s", "--show_log"
+                    ,help = "display log at end of run"
                     ,action="store_true")
-parser.add_argument("-s","--show_log"\
-                    ,help="display log at end of run"\
-                    ,action="store_true")
-
 args = parser.parse_args()
 
 
@@ -50,7 +48,7 @@ CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
 # Prep logging
 # =========================================================================
 with open(LOG_FILE, 'w') as LOG:
-    meta.WRITE_LOG(LOG_FILE, "ChickenDash starting", True)
+    meta.WRITE_LOG(LOG_FILE, "ChickenDash v" + meta.version + ": " + meta.avatar + " starting", True)
 
 if args.force_listen:
     meta.WRITE_LOG(LOG_FILE, "--force_listen specified", True)
@@ -98,8 +96,11 @@ if(CURRENT_TIME < DUSK_TIME and not args.force_listen):
                'Current time is past dusk, skipping execution', True)
 else:
     while(not meta.IS_DASH_BUTTON_01_PUSHED
-          and ((CURRENT_TIME < DUSK_TIME)
-          or (args.force_listen and i < 25))):
+          and ((CURRENT_TIME < DUSK_TIME))  or (args.force_listen)):
+        i += 1
+        if (i > 25 and args.force_listen):
+            print "force_list option exceeded 25 loops, exiting loop"
+            break
         i += 1
         print sniff(prn=meta.arp_display, filter="arp", store=0, count=meta.NUM_SNIFFS)
         CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
@@ -115,18 +116,10 @@ if args.show_log:
     meta.SHOW_LOG(LOG_FILE)
 
 
-
-
-
-
-
-
-
 #start at 5pm
 #does log exist?
 #    yes- append
 #    no - create
-
 #calcuate dusk print sniff(prn=arp_display, filter="arp", store=0, count=NUM_SNIFFS)time
 
 #start checking for ping
@@ -138,20 +131,6 @@ if args.show_log:
     #record and notify
     #wait 10 mins
     #record and notify
-
-
-#This program uses the sniff() callback (paramter prn). The store parameter is set to 0 so that the sniff() function will not store anything (as it would do otherwise) and thus can run forever. The filter parameter is used for better performances on high load : the filter is applied inside the kernel and Scapy will only see ARP traffic.
-
-##! /usr/bin/env python
-#from scapy.all import *
-
-#def arp_monitor_callback(pkt):
-    #if ARP in pkt and pkt[ARP].op in (1,2): #who-has or is-at
-        #return pkt.sprintf("%ARP.hwsrc% %ARP.psrc%")
-
-#sniff(prn=arp_monitor_callback, filter="arp", store=0)
-
-
 
 
 

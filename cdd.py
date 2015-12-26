@@ -75,9 +75,9 @@ DUSK_TIME = sun['dusk']
 meta.WRITE_LOG(LOG_FILE,
                'Calculating sunset and dusk for city: [' +  city_name + ']')
 meta.WRITE_LOG(LOG_FILE,
-               'Astral calculation for Sunset: ' + str(sun['sunset']))
+               'Astral calculation for Sunset: ' + str(sun['sunset']), True)
 meta.WRITE_LOG(LOG_FILE,
-               'Astral calculation for Dusk:   ' + str(sun['dusk']))
+               'Astral calculation for Dusk:   ' + str(sun['dusk']), True)
 meta.WRITE_LOG(LOG_FILE,
                'SECONDS_TIL_SUNSET: [' + str(SECONDS_TIL_SUNSET) + ']')
 meta.WRITE_LOG(LOG_FILE,
@@ -91,7 +91,7 @@ meta.WRITE_LOG(LOG_FILE,
 # has been pushed OR dusk has arrived
 # =========================================================================
 i = 0
-if(CURRENT_TIME < DUSK_TIME and not args.force_listen):
+if(CURRENT_TIME > DUSK_TIME and not args.force_listen):
     meta.WRITE_LOG(LOG_FILE,
                'Current time is past dusk, skipping execution', True)
 else:
@@ -101,7 +101,6 @@ else:
         if (i > 25 and args.force_listen):
             print "force_list option exceeded 25 loops, exiting loop"
             break
-        i += 1
         print sniff(prn=meta.arp_display, filter="arp", store=0, count=meta.NUM_SNIFFS)
         CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
         print "sniff run [" + str(i), "]", CURRENT_TIME, "BUTTON_PUSHED_STATE: ", meta.IS_DASH_BUTTON_01_PUSHED

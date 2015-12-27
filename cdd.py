@@ -25,8 +25,8 @@ import argparse
 # Argument parsing
 # =========================================================================
 parser = argparse.ArgumentParser()
-parser.add_argument("-f", "--force_listen"
-                    ,help = "Force the packet sniffer (override the time settings.)"
+parser.add_argument("-f", "--force_listen"\
+                    ,help = "Force the packet sniffer (override the time settings.)"\
                     ,action = "store_true")
 parser.add_argument("-s", "--show_log"
                     ,help = "display log at end of run"
@@ -56,7 +56,6 @@ if args.force_listen:
     meta.WRITE_LOG(LOG_FILE, "--show_log specified", True)
 
 
-
 # =========================================================================
 # Astral Variables
 # =========================================================================
@@ -73,7 +72,7 @@ DUSK_TIME = sun['dusk']
 
 
 meta.WRITE_LOG(LOG_FILE,
-               'Calculating sunset and dusk for city: [' +  city_name + ']')
+               'Calculating sunset and dusk for city: [' + city_name + ']')
 meta.WRITE_LOG(LOG_FILE,
                'Astral calculation for Sunset: ' + str(sun['sunset']), True)
 meta.WRITE_LOG(LOG_FILE,
@@ -96,11 +95,13 @@ if(CURRENT_TIME > DUSK_TIME and not args.force_listen):
                'Current time is past dusk, skipping execution', True)
 else:
     while(not meta.IS_DASH_BUTTON_01_PUSHED
-          and ((CURRENT_TIME < DUSK_TIME))  or (args.force_listen)):
+          and (CURRENT_TIME < DUSK_TIME or args.force_listen)):
+
         i += 1
         if (i > 25 and args.force_listen):
             print "force_list option exceeded 25 loops, exiting loop"
             break
+
         print sniff(prn=meta.arp_display, filter="arp", store=0, count=meta.NUM_SNIFFS)
         CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
         print "sniff run [" + str(i), "]", CURRENT_TIME, "BUTTON_PUSHED_STATE: ", meta.IS_DASH_BUTTON_01_PUSHED

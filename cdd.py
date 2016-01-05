@@ -121,13 +121,12 @@ else:
 
     # Send text message through SMS gateway of destination number
 
-    SMS_MESSAGE = 'ChickenDash button warning!  Check roost door.  ' + meta.today.strftime('%a %b %d')
+    SMS_MESSAGE = 'ChickenDash button warning!  Check roost door.  '
+                + meta.today.strftime('%a %b %d')
     print "+++DEBUG: SMS_MESSAGE = [" + SMS_MESSAGE + "]"
     server.sendmail( 'ChickenDash'
                     , meta.DESTINATION_NUMBER
                     , SMS_MESSAGE)
-                    #, 'ChickenDash button warning!  Check roost door.' + str(datetime.date.today()))
-
 
 
 # =========================================================================
@@ -135,25 +134,4 @@ else:
 # =========================================================================
 if args.show_log:
     meta.SHOW_LOG(LOG_FILE)
-
-
-#start at 5pm
-#does log exist?
-#    yes- append
-#    no - create
-#calcuate dusk print sniff(prn=arp_display, filter="arp", store=0, count=NUM_SNIFFS)time
-
-#start checking for ping
-#if ping:
-    #record and quit
-#if dusk and not ping
-    #record and notify
-    #wait 10 mins
-    #record and notify
-    #wait 10 mins
-    #record and notify
-
-
-
-
 

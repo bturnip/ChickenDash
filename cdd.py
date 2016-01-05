@@ -6,11 +6,13 @@ Danny Anderson
 packet sniffing code started here:
 https://medium.com/@edwardbenson/how-i-hacked-amazon-s-5-wifi-button-to-track-baby-data-794214b0bdd8
 
+# sms messaging code from Alex Le
+# https://gist.github.com/alexle/1294495
+
 @author: bturnip
 """
 
 import cdd_meta as meta
-#import google_calendar_api as google
 import sys
 import csv
 import datetime
@@ -19,6 +21,7 @@ from astral import Astral
 import os
 from scapy.all import *
 import argparse
+import smtplib
 
 
 # =========================================================================
@@ -34,7 +37,6 @@ parser.add_argument("-s", "--show_log"
 args = parser.parse_args()
 
 
-
 # =========================================================================
 # Variables
 # =========================================================================
@@ -48,7 +50,7 @@ CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
 # Prep logging
 # =========================================================================
 with open(LOG_FILE, 'w') as LOG:
-    meta.WRITE_LOG(LOG_FILE, "ChickenDash v" + meta.version + ": " + meta.avatar + " starting", True)
+    meta.WRITE_LOG(LOG_FILE, meta.full_name + " starting", True)
 
 if args.force_listen:
     meta.WRITE_LOG(LOG_FILE, "--force_listen specified", True)
@@ -107,6 +109,25 @@ else:
         print "sniff run [" + str(i), "]", CURRENT_TIME, "BUTTON_PUSHED_STATE: ", meta.IS_DASH_BUTTON_01_PUSHED
 
     print "LOOP EXIT", "Button Push:", meta.IS_DASH_BUTTON_01_PUSHED, CURRENT_TIME
+
+
+if meta.IS_DASH_BUTTON_01_PUSHED:
+    meta.WRITE_LOG(LOG_FILE,'Button pushed, program exit...')
+else:
+    meta.WRITE_LOG(LOG_FILE,'Button not pushed, sending SMS warning')
+    server = smtplib.SMTP( "smtp.gmail.com", 587 )
+    server.starttls()
+    server.login( meta.GMAIL_ADDRESS, meta.APP_PASS )
+
+    # Send text message through SMS gateway of destination number
+
+    SMS_MESSAGE = 'ChickenDash button warning!  Check roost door.  ' + meta.today.strftime('%a %b %d')
+    print "+++DEBUG: SMS_MESSAGE = [" + SMS_MESSAGE + "]"
+    server.sendmail( 'ChickenDash'
+                    , meta.DESTINATION_NUMBER
+                    , SMS_MESSAGE)
+                    #, 'ChickenDash button warning!  Check roost door.' + str(datetime.date.today()))
+
 
 
 # =========================================================================

@@ -30,10 +30,14 @@ import smtplib
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--force_listen"\
                     ,help = "Force the packet sniffer (override the time settings.)"\
-                    ,action = "store_true")
+                    , action = "store_true")
 parser.add_argument("-s", "--show_log"
                     ,help = "display log at end of run"
                     ,action="store_true")
+parser.add_argument("-k", "--kill_sms"
+                    ,help = "prevent SMS/MMS message from being sent"
+                    ,action="store_true")
+
 args = parser.parse_args()
 
 
@@ -43,6 +47,13 @@ args = parser.parse_args()
 FILE = meta.CDD_DATA_FILE
 LOG_FILE = meta.CDD_DIR + "/data/cdd_log_" + meta.YYYYMMDD + ".log"
 CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
+
+if args.kill_sms:
+    MESSAGE_ENABLED = False
+else:
+    MESSAGE_ENABLED = True
+
+
 
 
 
@@ -54,8 +65,10 @@ with open(LOG_FILE, 'w') as LOG:
 
 if args.force_listen:
     meta.WRITE_LOG(LOG_FILE, "--force_listen specified", True)
-if args.force_listen:
+if args.show_log:
     meta.WRITE_LOG(LOG_FILE, "--show_log specified", True)
+if args.kill_sms:
+    meta.WRITE_LOG(LOG_FILE, "---kill_sms specified", True)
 
 
 # =========================================================================
@@ -94,7 +107,9 @@ meta.WRITE_LOG(LOG_FILE,
 i = 0
 if(CURRENT_TIME > DUSK_TIME and not args.force_listen):
     meta.WRITE_LOG(LOG_FILE,
-               'Current time is past dusk, skipping execution', True)
+                   'Current time is past dusk, skipping execution'
+                   , True)
+    MESSAGE_ENABLED = False
 else:
     while(not meta.IS_DASH_BUTTON_01_PUSHED
           and (CURRENT_TIME < DUSK_TIME or args.force_listen)):
@@ -115,18 +130,20 @@ if meta.IS_DASH_BUTTON_01_PUSHED:
     meta.WRITE_LOG(LOG_FILE,'Button pushed, program exit...')
 else:
     meta.WRITE_LOG(LOG_FILE,'Button not pushed, sending SMS warning')
-    server = smtplib.SMTP( "smtp.gmail.com", 587 )
-    server.starttls()
-    server.login( meta.GMAIL_ADDRESS, meta.APP_PASS )
+    if MESSAGE_ENABLED:
+        server = smtplib.SMTP( "smtp.gmail.com", 587 )
+        server.starttls()
+        server.login( meta.GMAIL_ADDRESS, meta.APP_PASS )
 
-    # Send text message through SMS gateway of destination number
-
-    SMS_MESSAGE = 'ChickenDash button warning!  Check roost door.  '
-                + meta.today.strftime('%a %b %d')
-    print "+++DEBUG: SMS_MESSAGE = [" + SMS_MESSAGE + "]"
-    server.sendmail( 'ChickenDash'
-                    , meta.DESTINATION_NUMBER
-                    , SMS_MESSAGE)
+        # Send text message through SMS gateway of destination number
+        SMS_MESSAGE = 'ChickenDash button warning!  Check roost door.  ' \
+                    + meta.today.strftime('%a %b %d')
+        # print "+++DEBUG: SMS_MESSAGE = [" + SMS_MESSAGE + "]"
+        server.sendmail('ChickenDash'
+                        , meta.DESTINATION_NUMBER
+                        , SMS_MESSAGE)
+    else:
+        meta.WRITE_LOG(LOG_FILE,"MESSAGE_ENABLED is False, skipping SMS")
 
 
 # =========================================================================

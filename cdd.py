@@ -45,7 +45,7 @@ args = parser.parse_args()
 # Variables
 # =========================================================================
 FILE = meta.CDD_DATA_FILE
-LOG_FILE = meta.CDD_DIR + "/data/cdd_log_" + meta.YYYYMMDD + ".log"
+LOG_FILE = meta.LOG_FILE
 CURRENT_TIME = meta.TIMEZONE.localize(datetime.datetime.now())
 
 if args.kill_sms:
@@ -54,14 +54,13 @@ else:
     MESSAGE_ENABLED = True
 
 
-
-
-
 # =========================================================================
 # Prep logging
 # =========================================================================
-with open(LOG_FILE, 'w') as LOG:
-    meta.WRITE_LOG(LOG_FILE, meta.full_name + " starting", True)
+with open(LOG_FILE, 'a+') as LOG:
+    meta.WRITE_LOG(LOG_FILE, "=" * 55, True)
+    meta.WRITE_LOG(LOG_FILE,meta.full_name + " starting",True)
+    meta.WRITE_LOG(LOG_FILE, "=" * 55, True)
 
 if args.force_listen:
     meta.WRITE_LOG(LOG_FILE, "--force_listen specified", True)

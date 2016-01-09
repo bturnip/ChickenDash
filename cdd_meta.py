@@ -15,16 +15,16 @@ from scapy.all import *
 # =========================================================================
 today = datetime.datetime.today()
 YYYYMMDD = today.strftime('%Y%m%d%H%M%S')
-CITY = "<CITYNAME>"
+CITY = "Little Rock"
 # Kludge, though this comes out automatically
 # using Astral if the city is recognized
-TIMEZONE = pytz.timezone('<TIMEZONE>')
+TIMEZONE = pytz.timezone('US/Central')
 
 
 # =========================================================================
 # Button Variables
 # =========================================================================
-DASH_BTTN_MAC_01 = '<01:23:45:67:89:0a>'
+DASH_BTTN_MAC_01 = '74:75:48:24:39:fd'
 DASH_BTTN_MAC_02 = ''
 
 
@@ -41,16 +41,35 @@ pass
 # =========================================================================
 # SMS/Gmail
 # =========================================================================
-GMAIL_ADDRESS = '<email@gmail.com>'
-APP_PASS = '<qwerty12345>'
-DESTINATION_NUMBER = '<5558675309@sms.gateway>'
+GMAIL_ADDRESS = 'bturnip@gmail.com'
+APP_PASS = 'hpedxxexkkcxulgr'
+DESTINATION_NUMBER = '5018378842@pm.sprint.com'
 
 
 # =========================================================================
 # File paths
 # =========================================================================
-CDD_DIR = "/home/<user>/Documents/Code/python/ChickenDash"
-CDD_DATA_FILE = CDD_DIR + "data/cdd.csv"
+CDD_DIR = "/home/bturnip/Documents/Code/python/ChickenDash"
+CDD_DATA_FILE = CDD_DIR + "/data/cdd.csv"
+
+
+# =========================================================================
+# Logging
+# =========================================================================
+CDD_LOG_DIR = CDD_DIR + "/log"
+
+# Logging options are "SINGLE_FILE" appended daily
+# or "MULTIPLE_FILE" which creates one file per program run
+LOGGING_STYLE = "SINGLE_FILE"
+#LOGGING_STYLE = "MULTIPLE_FILE"
+
+
+if LOGGING_STYLE == "SINGLE_FILE":
+    LOG_FILE = CDD_LOG_DIR + "/cdd.log"
+else:
+    # default to "MULTIPLE_FILE"
+    LOG_FILE = CDD_LOG_DIR + "/cdd_log_" + YYYYMMDD + ".log"
+
 
 
 # =========================================================================
